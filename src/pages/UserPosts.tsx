@@ -1,7 +1,6 @@
 import { CustomText } from "../components/CustomText";
 import leftArrow from "../assets/leftArrow.svg";
 import { useNavigate, useParams } from "react-router";
-import { samplePosts } from "../utils/data";
 import { PostCard } from "../components/cards/PostCard";
 import addCircle from "../assets/addCircle.svg";
 import { Modal } from "../components/Modal";
@@ -9,7 +8,7 @@ import { useState } from "react";
 import { NewPost } from "../components/modals/NewPost";
 import { useCustomMutation, useGetData } from "../lib/apiCalls";
 import { PaginationState } from "@tanstack/react-table";
-import { Post, User } from "../utils/types";
+import { PaginatedUsersResponse, Post, User } from "../utils/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "../components/Loader";
 
@@ -30,7 +29,7 @@ const UserPosts = () => {
     queryKey: ["UserInfo", userId!],
   });
 
-  const { data: posts, isLoading } = useGetData<Post[]>({
+  const { data: posts, isLoading } = useGetData<PaginatedUsersResponse<Post>>({
     url: `/users/${userId}/posts?page=${pagination.pageIndex}&limit=${pagination.pageSize}`,
     queryKey: ["UserPosts", userId, JSON.stringify(pagination)],
   });
@@ -42,7 +41,9 @@ const UserPosts = () => {
     errorMessage: () => "Failed to delete post",
     onSuccessCallback: () => {
       if (userId !== undefined) {
-        queryClient.invalidateQueries({ queryKey: ["UserPosts", userId] });
+        queryClient.invalidateQueries({
+          queryKey: ["UserPosts", userId, JSON.stringify(pagination)],
+        });
       }
     },
   });
@@ -58,7 +59,9 @@ const UserPosts = () => {
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader />
+        </div>
       ) : (
         // <main className="mx-auto w-[60%] mt-32">
         //   <div className="flex items-center">
@@ -131,7 +134,7 @@ const UserPosts = () => {
           <section className="mt-3 sm:mt-4">
             <CustomText variant="textSm" className="text-xs sm:text-sm">
               {user?.email}{" "}
-              <span className="font-medium">• {posts?.length} Posts</span>
+              <span className="font-medium">• {posts?.total} Posts</span>
             </CustomText>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6">
@@ -148,10 +151,10 @@ const UserPosts = () => {
                 </CustomText>
               </div>
 
-              {samplePosts.map(({ id, post, title }) => (
+              {posts?.data.map(({ id, title, body }) => (
                 <PostCard
                   onDelete={() => handleDelete(id)}
-                  post={post}
+                  post={body}
                   title={title}
                   key={id}
                 />

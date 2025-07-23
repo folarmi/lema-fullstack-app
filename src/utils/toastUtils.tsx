@@ -34,13 +34,6 @@ export const showSuccessToast = (message: string) => {
   });
 };
 
-// export const showErrorToast = (message: string) => {
-//   toast.error(message, {
-//     style: errorToastStyle,
-//   });
-// };
-
-// Optional: Generic toast with custom type
 export const showToast = (
   message: string,
   type: "success" | "error" | "info" | "warning"

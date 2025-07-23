@@ -15,7 +15,6 @@ import {
   showSuccessToast,
 } from "../utils/toastUtils";
 
-// General API response format
 interface MutationResponse<T = unknown> {
   status: number;
   data: {
@@ -83,17 +82,11 @@ export const useCustomMutation = <
       return response.data;
     },
     onSuccess: (data) => {
-      if (
-        (data as Record<string, unknown>)?.access_token ||
-        (data as Record<string, unknown>)?.data ||
-        (data as Record<string, unknown>)?.isSuccess
-      ) {
-        if (successMessage) {
-          showSuccessToast(successMessage(data));
-        }
-        if (onSuccessCallback) {
-          onSuccessCallback(data);
-        }
+      if (successMessage) {
+        showSuccessToast(successMessage(data));
+      }
+      if (onSuccessCallback) {
+        onSuccessCallback(data);
       }
     },
     onError: (error) => {

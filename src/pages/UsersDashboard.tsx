@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CustomText } from "../components/CustomText";
 import Table from "../components/Table";
 import { createColumnHelper, PaginationState } from "@tanstack/react-table";
-import { User } from "../utils/types";
+import { PaginatedUsersResponse, User } from "../utils/types";
 import { useGetData } from "../lib/apiCalls";
 
 const UsersDashboard = () => {
@@ -11,7 +11,9 @@ const UsersDashboard = () => {
     pageSize: 4,
   });
 
-  const { data: userData, isLoading } = useGetData<User[]>({
+  const { data: userData, isLoading } = useGetData<
+    PaginatedUsersResponse<User>
+  >({
     url: `/users?page=${pagination.pageIndex}&limit=${pagination.pageSize}`,
     queryKey: ["GetAllStatesTable", JSON.stringify(pagination)],
   });
@@ -44,6 +46,23 @@ const UsersDashboard = () => {
         );
       },
     }),
+    columnHelper.accessor("address", {
+      header: "Address",
+      cell: (info) => {
+        const address = info.getValue();
+        const formatted = `${address?.street}, ${address?.state}, ${address?.city}, ${address?.zipcode}`;
+        return (
+          <div className="w-[392px] truncate">
+            <CustomText
+              variant="textSm"
+              className="whitespace-nowrap overflow-hidden text-ellipsis block"
+            >
+              {formatted}
+            </CustomText>
+          </div>
+        );
+      },
+    }),
     columnHelper.accessor("username", {
       header: "Username",
       cell: (info) => {
@@ -70,7 +89,7 @@ const UsersDashboard = () => {
     }),
   ];
 
-  const sortedData = userData
+  const sortedData = userData?.data
     ?.slice()
     .sort((a: User, b: User) => a?.name.localeCompare(b.name));
 
@@ -81,10 +100,11 @@ const UsersDashboard = () => {
 
       <main className="mt-6">
         <Table
-          data={sortedData ?? []}
+          data={sortedData || []}
           columns={columns}
           isLoading={isLoading}
           pagination={pagination}
+          rowCount={userData?.total || 0}
           setPagination={setPagination}
         />
       </main>

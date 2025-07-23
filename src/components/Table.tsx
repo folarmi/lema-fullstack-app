@@ -58,7 +58,7 @@ const Table = ({
         </div>
       ) : (
         <>
-          <div className="overflow-hidden rounded-2xl border border-gray_200 pt-4">
+          <div className="overflow-x-auto rounded-2xl border border-gray_200 pt-4">
             <table className="w-full  ">
               <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -112,49 +112,96 @@ const Table = ({
           </div>
 
           {/* Only show pagination if there's data */}
-
           {data && (
-            <div className="mt-6 flex items-center justify-end gap-3">
-              <div
-                className="flex items-center"
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-end gap-3">
+              <button
+                className="flex items-center cursor-pointer"
                 onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
               >
                 <img src={leftArrow} aria-label="Previous Page" />
                 <CustomText variant="textSemiBold" className="pl-2">
                   Previous
                 </CustomText>
-              </div>
+              </button>
 
-              <div className="flex items-center gap-2 mx-8">
-                {Array.from({ length: table.getPageCount() }, (_, i) => (
+              <div className="flex items-center gap-1 mx-2 sm:mx-4 flex-wrap justify-center">
+                {/* Always show first page */}
+                <button
+                  onClick={() => table.setPageIndex(0)}
+                  className={clsx(
+                    "px-3 py-1 rounded-lg text-sm font-medium h-10 w-10",
+                    table.getState().pagination.pageIndex === 0
+                      ? "bg-brand_50 text-brand_600"
+                      : "text-gray_500"
+                  )}
+                >
+                  1
+                </button>
+
+                {/* Show ellipsis if current page is far from start */}
+                {table.getState().pagination.pageIndex > 2 && (
+                  <span className="px-2 text-gray-500">...</span>
+                )}
+
+                {/* Show pages around current page */}
+                {Array.from({ length: table.getPageCount() }, (_, i) => {
+                  if (
+                    i > 0 && // Skip first page (already shown)
+                    i < table.getPageCount() - 1 && // Skip last page (will be shown)
+                    Math.abs(i - table.getState().pagination.pageIndex) <= 1 // Show nearby pages
+                  ) {
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => table.setPageIndex(i)}
+                        className={clsx(
+                          "px-3 py-1 rounded-lg text-sm font-medium h-10 w-10",
+                          table.getState().pagination.pageIndex === i
+                            ? "bg-brand_50 text-brand_600"
+                            : "text-gray_500"
+                        )}
+                      >
+                        {i + 1}
+                      </button>
+                    );
+                  }
+                  return null;
+                })}
+
+                {/* Show ellipsis if current page is far from end */}
+                {table.getState().pagination.pageIndex <
+                  table.getPageCount() - 3 && (
+                  <span className="px-2 text-gray-500">...</span>
+                )}
+
+                {/* Always show last page */}
+                {table.getPageCount() > 1 && (
                   <button
-                    key={i}
-                    onClick={() => table.setPageIndex(i)}
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                     className={clsx(
                       "px-3 py-1 rounded-lg text-sm font-medium h-10 w-10",
-                      table.getState().pagination.pageIndex === i
+                      table.getState().pagination.pageIndex ===
+                        table.getPageCount() - 1
                         ? "bg-brand_50 text-brand_600"
-                        : " text-gray_500"
+                        : "text-gray_500"
                     )}
                   >
-                    {i + 1}
+                    {table.getPageCount()}
                   </button>
-                ))}
+                )}
               </div>
 
-              <div
+              <button
                 className="flex items-center cursor-pointer"
                 onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
               >
                 <CustomText variant="textSemiBold" className="pr-2">
                   Next
                 </CustomText>
-                <img
-                  src={rightArrow}
-                  onClick={() => table.previousPage()}
-                  aria-label="Previous Page"
-                />
-              </div>
+                <img src={rightArrow} aria-label="Next Page" />
+              </button>
             </div>
           )}
         </>
