@@ -1,5 +1,7 @@
 // PostCard.test.tsx
-import { render, screen, fireEvent } from "@testing-library/react";
+// import { render, screen, fireEvent } from "@testing-library/dom";
+import { render } from "@testing-library/react";
+import { screen, fireEvent } from "@testing-library/dom";
 import { PostCard } from "../components/cards/PostCard";
 
 describe("PostCard", () => {
