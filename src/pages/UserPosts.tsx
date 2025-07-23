@@ -109,11 +109,10 @@ const UserPosts = () => {
         //   </section>
         // </main>
         <main className="mx-auto w-full px-4 sm:px-6 md:w-4/5 lg:w-3/4 xl:w-2/3 2xl:w-[60%] mt-8 sm:mt-16 lg:mt-24 xl:mt-32">
-          <div className="flex items-center">
+          <div className="flex items-center" onClick={() => navigate("/")}>
             <img
               src={leftArrow}
               aria-label="Previous Page"
-              onClick={() => navigate("/")}
               className="cursor-pointer w-5 h-5 sm:w-6 sm:h-6"
             />
             <CustomText
@@ -126,7 +125,7 @@ const UserPosts = () => {
 
           <CustomText
             variant="displayXL"
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl py-6"
           >
             {user?.name}
           </CustomText>
