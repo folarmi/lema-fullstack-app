@@ -63,51 +63,6 @@ const UserPosts = () => {
           <Loader />
         </div>
       ) : (
-        // <main className="mx-auto w-[60%] mt-32">
-        //   <div className="flex items-center">
-        //     <img
-        //       src={leftArrow}
-        //       aria-label="Previous Page"
-        //       onClick={() => navigate("/")}
-        //       className="cursor-pointer"
-        //     />
-        //     <CustomText variant="textSemiBold" className="pl-2">
-        //       Back to Users
-        //     </CustomText>
-        //   </div>
-        //   <CustomText variant="displayXL">{user?.name}</CustomText>
-
-        //   <section className="mt-4">
-        //     <CustomText variant="textSm">
-        //       {user?.email}{" "}
-        //       <span className="font-medium">• {posts?.length} Posts</span>
-        //     </CustomText>
-
-        //     <div className="grid grid-cols-3 mt-6">
-        //       <div
-        //         onClick={toggleNewPost}
-        //         className="w-[270px] h-[293px] border border-dashed border-gray_300 flex flex-col justify-center items-center rounded-lg cursor-pointer"
-        //       >
-        //         <img src={addCircle} />
-        //         <CustomText variant="textSemiBold">New Post</CustomText>
-        //       </div>
-        //       {samplePosts.map(({ id, post, title }) => {
-        //         return (
-        //           <PostCard
-        //             onDelete={() => handleDelete(id)}
-        //             post={post}
-        //             title={title}
-        //             key={id}
-        //           />
-        //         );
-        //       })}
-        //     </div>
-
-        // <Modal show={newPost} toggleModal={toggleNewPost}>
-        //   <NewPost toggleModal={toggleNewPost} />
-        // </Modal>
-        //   </section>
-        // </main>
         <main className="mx-auto w-full px-4 sm:px-6 md:w-4/5 lg:w-3/4 xl:w-2/3 2xl:w-[60%] mt-8 sm:mt-16 lg:mt-24 xl:mt-32">
           <div className="flex items-center" onClick={() => navigate("/")}>
             <img

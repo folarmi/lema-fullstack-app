@@ -211,23 +211,3 @@ const Table = ({
 };
 
 export default Table;
-{
-  /* <button
-                className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                aria-label="Previous Page"
-              >
-                {"<"}
-              </button> */
-}
-{
-  /* <button
-                className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                aria-label="Next Page"
-              >
-                {">"}
-              </button> */
-}

@@ -94,7 +94,7 @@ const UsersDashboard = () => {
     .sort((a: User, b: User) => a?.name.localeCompare(b.name));
 
   return (
-    <div className="mx-auto w-full px-4 sm:px-6 lg:px-8 mt-8 md:mt-16 lg:mt-32">
+    <div className="mx-auto w-full lg:w-[60%] px-4 sm:px-6 lg:px-8 mt-8 md:mt-16 lg:mt-32">
       <CustomText variant="displayXL">Users</CustomText>
 
       <main className="mt-4 md:mt-6 overflow-x-auto">
