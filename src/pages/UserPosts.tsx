@@ -11,11 +11,12 @@ import { PaginationState } from "@tanstack/react-table";
 import { PaginatedUsersResponse, Post, User } from "../utils/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "../components/Loader";
+import { Pagination } from "../components/Pagination";
 
 const UserPosts = () => {
   const queryClient = useQueryClient();
   const [newPost, setNewPost] = useState(false);
-  const [pagination] = useState<PaginationState>({
+  const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 4,
   });
@@ -30,7 +31,9 @@ const UserPosts = () => {
   });
 
   const { data: posts, isLoading } = useGetData<PaginatedUsersResponse<Post>>({
-    url: `/users/${userId}/posts?page=${pagination.pageIndex}&limit=${pagination.pageSize}`,
+    url: `/users/${userId}/posts?page=${pagination.pageIndex + 1}&limit=${
+      pagination.pageSize
+    }`,
     queryKey: ["UserPosts", userId, JSON.stringify(pagination)],
   });
 
@@ -94,7 +97,7 @@ const UserPosts = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6">
               <div
                 onClick={toggleNewPost}
-                className="w-full sm:w-[220px] md:w-[250px] lg:w-[270px] h-[200px] sm:h-[250px] lg:h-[293px] border border-dashed border-gray_300 flex flex-col justify-center items-center rounded-lg cursor-pointer"
+                className="w-full h-full border border-dashed border-gray_300 flex flex-col justify-center items-center rounded-lg cursor-pointer py-4"
               >
                 <img src={addCircle} className="w-10 h-10 sm:w-12 sm:h-12" />
                 <CustomText
@@ -115,6 +118,19 @@ const UserPosts = () => {
               ))}
             </div>
           </section>
+
+          <Pagination
+            currentPage={pagination.pageIndex}
+            totalItems={posts?.total || 0}
+            pageSize={pagination.pageSize}
+            onPageChange={(newPage) =>
+              setPagination((prev) => ({
+                ...prev,
+                pageIndex: newPage,
+              }))
+            }
+            className="my-4"
+          />
 
           <Modal show={newPost} toggleModal={toggleNewPost}>
             <NewPost toggleModal={toggleNewPost} />
