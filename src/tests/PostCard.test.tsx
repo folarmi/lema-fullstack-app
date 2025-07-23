@@ -1,5 +1,5 @@
-// import { render } from "@testing-library/react";
-// import { screen, fireEvent } from "@testing-library/dom";
+// import { render, screen } from "@testing-library/react";
+// import userEvent from "@testing-library/user-event";
 // import { PostCard } from "../components/cards/PostCard";
 
 // describe("PostCard", () => {
@@ -14,22 +14,24 @@
 //   it("renders title and post content correctly", () => {
 //     render(<PostCard title={title} post={post} onDelete={mockOnDelete} />);
 
+//     // screen is now properly available
 //     expect(screen.getByText(title)).toBeInTheDocument();
 //     expect(screen.getByText(post)).toBeInTheDocument();
 //   });
 
-//   it("calls onDelete when delete icon is clicked", () => {
+//   it("calls onDelete when delete icon is clicked", async () => {
+//     const user = userEvent.setup();
 //     render(<PostCard title={title} post={post} onDelete={mockOnDelete} />);
 
 //     const deleteIcon = screen.getByTestId("delete-icon");
-//     fireEvent.click(deleteIcon);
+//     await user.click(deleteIcon);
 
 //     expect(mockOnDelete).toHaveBeenCalledTimes(1);
 //   });
 // });
 
-import { render, screen } from "@testing-library/react"; // Import screen here
-import userEvent from "@testing-library/user-event";
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event"; // Better than fireEvent
 import { PostCard } from "../components/cards/PostCard";
 
 describe("PostCard", () => {
@@ -42,18 +44,21 @@ describe("PostCard", () => {
   });
 
   it("renders title and post content correctly", () => {
-    render(<PostCard title={title} post={post} onDelete={mockOnDelete} />);
+    const { getByText } = render(
+      <PostCard title={title} post={post} onDelete={mockOnDelete} />
+    );
 
-    // screen is now properly available
-    expect(screen.getByText(title)).toBeInTheDocument();
-    expect(screen.getByText(post)).toBeInTheDocument();
+    expect(getByText(title)).toBeInTheDocument();
+    expect(getByText(post)).toBeInTheDocument();
   });
 
   it("calls onDelete when delete icon is clicked", async () => {
     const user = userEvent.setup();
-    render(<PostCard title={title} post={post} onDelete={mockOnDelete} />);
+    const { getByTestId } = render(
+      <PostCard title={title} post={post} onDelete={mockOnDelete} />
+    );
 
-    const deleteIcon = screen.getByTestId("delete-icon");
+    const deleteIcon = getByTestId("delete-icon");
     await user.click(deleteIcon);
 
     expect(mockOnDelete).toHaveBeenCalledTimes(1);
