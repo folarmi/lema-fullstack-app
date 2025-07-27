@@ -30,10 +30,10 @@ export type PaginatedUsersResponse<T> = {
 };
 
 export type CardProp = {
-  id: number;
+  id: string;
   title: string;
   post: string;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 };
 
 export type ModalProp = {
@@ -48,7 +48,7 @@ export type PostProp = {
 };
 
 export type Post = {
-  id: number;
+  id: string;
   user_id: string;
   title: string;
   body: string;

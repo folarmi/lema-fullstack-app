@@ -16,7 +16,7 @@ import { ConfirmDelete } from "../components/modals/ConfirmDelete";
 const UserPosts = () => {
   const [newPost, setNewPost] = useState(false);
   const [deletePost, setDeletePost] = useState(false);
-  const [postIdToDelete, setPostIdToDelete] = useState<number>(0);
+  const [postIdToDelete, setPostIdToDelete] = useState<string>("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 4,
@@ -52,7 +52,7 @@ const UserPosts = () => {
     setDeletePost(!deletePost);
   };
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
     setPostIdToDelete(id);
     setDeletePost(true);
   };

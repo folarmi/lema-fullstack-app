@@ -4,7 +4,7 @@ import { CustomButton } from "../CustomButton";
 import { useParams } from "react-router";
 
 type DeleteProp = {
-  postId: number;
+  postId: string;
   toggleModal: () => void;
 };
 
@@ -13,7 +13,7 @@ const ConfirmDelete = ({ toggleModal, postId }: DeleteProp) => {
   const { userId: rawUserId } = useParams();
 
   const deletePostMutation = useCustomMutation({
-    endpoint: (postId: number) => `/posts/${postId}`,
+    endpoint: (postId: string) => `/posts/${postId}`,
     method: "delete",
     successMessage: () => "Post deleted successfully!",
     errorMessage: () => "Failed to delete post",
