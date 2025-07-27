@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomText } from "../components/CustomText";
 import Table from "../components/Table";
-import { createColumnHelper, PaginationState } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  createColumnHelper,
+  PaginationState,
+} from "@tanstack/react-table";
 import { PaginatedUsersResponse, User } from "../utils/types";
 import { useGetData } from "../lib/apiCalls";
+import { useLocation } from "react-router";
 
 const UsersDashboard = () => {
+  const location = useLocation();
+  const restorePage = location.state?.restorePage;
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 4,
@@ -18,6 +26,15 @@ const UsersDashboard = () => {
     queryKey: ["GetAllStatesTable", JSON.stringify(pagination)],
   });
 
+  useEffect(() => {
+    if (restorePage !== undefined) {
+      setPagination((prev) => ({
+        ...prev,
+        pageIndex: restorePage,
+      }));
+    }
+  }, [restorePage]);
+
   const columnHelper = createColumnHelper<User>();
   const columns = [
     columnHelper.accessor("name", {
@@ -26,26 +43,29 @@ const UsersDashboard = () => {
         return (
           <div className="flex">
             <div className="">
-              <CustomText variant="body" className="">
+              <CustomText variant="medium" className="text-gray_600">
                 {info.getValue()}
               </CustomText>
             </div>
           </div>
         );
       },
-    }),
+    }) as ColumnDef<User>,
     columnHelper.accessor("email", {
       header: "Email Address",
       cell: (info) => {
         return (
           <div className="">
-            <CustomText variant="textSm" className=" whitespace-pre-wrap">
+            <CustomText
+              variant="textSm"
+              className="text-gray_600 whitespace-pre-wrap"
+            >
               {info.getValue()}
             </CustomText>
           </div>
         );
       },
-    }),
+    }) as ColumnDef<User>,
     columnHelper.accessor("address", {
       header: "Address",
       cell: (info) => {
@@ -62,31 +82,7 @@ const UsersDashboard = () => {
           </div>
         );
       },
-    }),
-    columnHelper.accessor("username", {
-      header: "Username",
-      cell: (info) => {
-        return (
-          <div className="">
-            <CustomText variant="textSm" className="">
-              {info.getValue()}
-            </CustomText>
-          </div>
-        );
-      },
-    }),
-    columnHelper.accessor("phone", {
-      header: "Phone",
-      cell: (info) => {
-        return (
-          <div className="">
-            <CustomText variant="textSm" className="">
-              {info.getValue()}
-            </CustomText>
-          </div>
-        );
-      },
-    }),
+    }) as ColumnDef<User>,
   ];
 
   const sortedData = userData?.data

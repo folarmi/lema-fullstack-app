@@ -9,14 +9,17 @@ export type Address = {
   zipcode: string;
 };
 
-export type User = {
-  id: string;
+export interface User {
   name: string;
-  username: string;
   email: string;
-  phone: string;
-  address: Address;
-};
+  id: string;
+  address: {
+    street: string;
+    state: string;
+    city: string;
+    zipcode: string;
+  };
+}
 
 export type PaginatedUsersResponse<T> = {
   data: T[];
@@ -27,9 +30,10 @@ export type PaginatedUsersResponse<T> = {
 };
 
 export type CardProp = {
+  id: number;
   title: string;
   post: string;
-  onDelete: () => void;
+  onDelete: (id: number) => void;
 };
 
 export type ModalProp = {
@@ -39,7 +43,7 @@ export type ModalProp = {
   children: ReactNode;
 };
 
-export type NewPostProp = {
+export type PostProp = {
   toggleModal: () => void;
 };
 
@@ -50,3 +54,11 @@ export type Post = {
   body: string;
   created_at: string;
 };
+
+export type FormData = {
+  title: string;
+  body: string;
+};
+
+export const MAX_TITLE_LENGTH = 50;
+export const MAX_BODY_LENGTH = 1000;

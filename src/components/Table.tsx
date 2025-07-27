@@ -1,7 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
+  OnChangeFn,
+  PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
 import leftArrow from "../assets/leftArrow.svg";
@@ -14,12 +16,12 @@ import { User } from "../utils/types";
 
 interface TableProps {
   data: User[];
-  columns: any[];
+  columns: ColumnDef<User>[];
   isLoading: boolean;
   rowCount?: number;
-  pagination?: any;
-  setPagination?: (pagination: any) => void;
-  emptyState?: React.ReactNode; // Add emptyState prop
+  pagination?: PaginationState;
+  setPagination?: OnChangeFn<PaginationState>;
+  emptyState?: React.ReactNode;
 }
 
 const Table = ({
@@ -87,7 +89,9 @@ const Table = ({
                         <td
                           key={cell.id}
                           onClick={() =>
-                            navigate(`/user/${row.original.id}/posts`)
+                            navigate(`/user/${row.original.id}/posts`, {
+                              state: { fromPage: pagination?.pageIndex },
+                            })
                           }
                           className="px-6 whitespace-nowrap border-b border-gray_200 py-7"
                         >
@@ -111,8 +115,7 @@ const Table = ({
             </table>
           </div>
 
-          {/* Only show pagination if there's data */}
-          {data && (
+          {/* {data && (
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-end gap-3">
               <button
                 className="flex items-center cursor-pointer"
@@ -126,7 +129,6 @@ const Table = ({
               </button>
 
               <div className="flex items-center gap-1 mx-2 sm:mx-4 flex-wrap justify-center">
-                {/* Always show first page */}
                 <button
                   onClick={() => table.setPageIndex(0)}
                   className={clsx(
@@ -139,17 +141,15 @@ const Table = ({
                   1
                 </button>
 
-                {/* Show ellipsis if current page is far from start */}
                 {table.getState().pagination.pageIndex > 2 && (
                   <span className="px-2 text-gray-500">...</span>
                 )}
 
-                {/* Show pages around current page */}
                 {Array.from({ length: table.getPageCount() }, (_, i) => {
                   if (
-                    i > 0 && // Skip first page (already shown)
-                    i < table.getPageCount() - 1 && // Skip last page (will be shown)
-                    Math.abs(i - table.getState().pagination.pageIndex) <= 1 // Show nearby pages
+                    i > 0 &&
+                    i < table.getPageCount() - 1 &&
+                    Math.abs(i - table.getState().pagination.pageIndex) <= 1
                   ) {
                     return (
                       <button
@@ -169,13 +169,11 @@ const Table = ({
                   return null;
                 })}
 
-                {/* Show ellipsis if current page is far from end */}
                 {table.getState().pagination.pageIndex <
                   table.getPageCount() - 3 && (
                   <span className="px-2 text-gray-500">...</span>
                 )}
 
-                {/* Always show last page */}
                 {table.getPageCount() > 1 && (
                   <button
                     onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -201,6 +199,112 @@ const Table = ({
                   Next
                 </CustomText>
                 <img src={rightArrow} aria-label="Next Page" />
+              </button>
+            </div>
+          )} */}
+
+          {data && (
+            <div className="mt-6 flex items-center justify-center sm:justify-end gap-1 sm:gap-3 flex-nowrap overflow-x-hidden w-full py-1">
+              <button
+                className="flex items-center cursor-pointer disabled:opacity-50 whitespace-nowrap"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <img
+                  src={leftArrow}
+                  aria-label="Previous Page"
+                  className="w-4 h-4"
+                />
+                <CustomText
+                  variant="textSemiBold"
+                  className="pl-1 sm:pl-2 text-sm"
+                >
+                  Previous
+                </CustomText>
+              </button>
+
+              <div className="flex items-center gap-1 mx-1 sm:mx-2 flex-nowrap">
+                <button
+                  onClick={() => table.setPageIndex(0)}
+                  className={clsx(
+                    "px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium h-8 sm:h-10 w-8 sm:w-10",
+                    table.getState().pagination.pageIndex === 0
+                      ? "bg-brand_50 text-brand_600"
+                      : "text-gray_500"
+                  )}
+                >
+                  1
+                </button>
+
+                {table.getState().pagination.pageIndex > 2 && (
+                  <span className="px-1 text-gray-500 text-xs sm:text-sm">
+                    ...
+                  </span>
+                )}
+
+                {Array.from({ length: table.getPageCount() }, (_, i) => {
+                  if (
+                    i > 0 &&
+                    i < table.getPageCount() - 1 &&
+                    Math.abs(i - table.getState().pagination.pageIndex) <= 1
+                  ) {
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => table.setPageIndex(i)}
+                        className={clsx(
+                          "px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium h-8 sm:h-10 w-8 sm:w-10",
+                          table.getState().pagination.pageIndex === i
+                            ? "bg-brand_50 text-brand_600"
+                            : "text-gray_500"
+                        )}
+                      >
+                        {i + 1}
+                      </button>
+                    );
+                  }
+                  return null;
+                })}
+
+                {table.getState().pagination.pageIndex <
+                  table.getPageCount() - 3 && (
+                  <span className="px-1 text-gray-500 text-xs sm:text-sm">
+                    ...
+                  </span>
+                )}
+
+                {table.getPageCount() > 1 && (
+                  <button
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    className={clsx(
+                      "px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium h-8 sm:h-10 w-8 sm:w-10",
+                      table.getState().pagination.pageIndex ===
+                        table.getPageCount() - 1
+                        ? "bg-brand_50 text-brand_600"
+                        : "text-gray_500"
+                    )}
+                  >
+                    {table.getPageCount()}
+                  </button>
+                )}
+              </div>
+
+              <button
+                className="flex items-center cursor-pointer disabled:opacity-50 whitespace-nowrap"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <CustomText
+                  variant="textSemiBold"
+                  className="pr-1 sm:pr-2 text-sm"
+                >
+                  Next
+                </CustomText>
+                <img
+                  src={rightArrow}
+                  aria-label="Next Page"
+                  className="w-4 h-4"
+                />
               </button>
             </div>
           )}

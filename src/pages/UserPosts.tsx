@@ -1,21 +1,22 @@
 import { CustomText } from "../components/CustomText";
 import leftArrow from "../assets/leftArrow.svg";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { PostCard } from "../components/cards/PostCard";
 import addCircle from "../assets/addCircle.svg";
 import { Modal } from "../components/Modal";
 import { useState } from "react";
 import { NewPost } from "../components/modals/NewPost";
-import { useCustomMutation, useGetData } from "../lib/apiCalls";
+import { useGetData } from "../lib/apiCalls";
 import { PaginationState } from "@tanstack/react-table";
 import { PaginatedUsersResponse, Post, User } from "../utils/types";
-import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "../components/Loader";
 import { Pagination } from "../components/Pagination";
+import { ConfirmDelete } from "../components/modals/ConfirmDelete";
 
 const UserPosts = () => {
-  const queryClient = useQueryClient();
   const [newPost, setNewPost] = useState(false);
+  const [deletePost, setDeletePost] = useState(false);
+  const [postIdToDelete, setPostIdToDelete] = useState<number>(0);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 4,
@@ -24,6 +25,12 @@ const UserPosts = () => {
   const navigate = useNavigate();
   const { userId: rawUserId } = useParams();
   const userId = String(rawUserId);
+  const location = useLocation();
+  const fromPage = location.state?.fromPage || 1;
+
+  const handleBack = () => {
+    navigate("/", { state: { restorePage: fromPage } });
+  };
 
   const { data: user } = useGetData<User>({
     url: `/users/${userId}`,
@@ -37,26 +44,17 @@ const UserPosts = () => {
     queryKey: ["UserPosts", userId, JSON.stringify(pagination)],
   });
 
-  const deletePostMutation = useCustomMutation({
-    endpoint: (postId: number) => `/posts/${postId}`,
-    method: "delete",
-    successMessage: () => "Post deleted successfully!",
-    errorMessage: () => "Failed to delete post",
-    onSuccessCallback: () => {
-      if (userId !== undefined) {
-        queryClient.invalidateQueries({
-          queryKey: ["UserPosts", userId, JSON.stringify(pagination)],
-        });
-      }
-    },
-  });
-
-  const handleDelete = async (postId: number) => {
-    deletePostMutation.mutate(postId);
-  };
-
   const toggleNewPost = () => {
     setNewPost(!newPost);
+  };
+
+  const toggleDeletePost = () => {
+    setDeletePost(!deletePost);
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setPostIdToDelete(id);
+    setDeletePost(true);
   };
 
   return (
@@ -67,7 +65,7 @@ const UserPosts = () => {
         </div>
       ) : (
         <main className="mx-auto w-full px-4 sm:px-6 md:w-4/5 lg:w-3/4 xl:w-2/3 2xl:w-[60%] mt-8 sm:mt-16 lg:mt-24 xl:mt-32">
-          <div className="flex items-center" onClick={() => navigate("/")}>
+          <div className="flex items-center" onClick={handleBack}>
             <img
               src={leftArrow}
               aria-label="Previous Page"
@@ -110,10 +108,11 @@ const UserPosts = () => {
 
               {posts?.data.map(({ id, title, body }) => (
                 <PostCard
-                  onDelete={() => handleDelete(id)}
+                  onDelete={handleDeleteClick}
                   post={body}
                   title={title}
                   key={id}
+                  id={id}
                 />
               ))}
             </div>
@@ -134,6 +133,13 @@ const UserPosts = () => {
 
           <Modal show={newPost} toggleModal={toggleNewPost}>
             <NewPost toggleModal={toggleNewPost} />
+          </Modal>
+
+          <Modal show={deletePost} toggleModal={toggleDeletePost}>
+            <ConfirmDelete
+              toggleModal={toggleDeletePost}
+              postId={postIdToDelete}
+            />
           </Modal>
         </main>
       )}

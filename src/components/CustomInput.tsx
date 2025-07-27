@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import clsx from "clsx";
+import { Control, useController, UseControllerProps } from "react-hook-form";
+import { FormData } from "../utils/types";
 
-interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface CustomInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "name"> {
+  name: keyof FormData;
+  control: Control<FormData>;
+  type?: string;
+  rules?: UseControllerProps<FormData>["rules"];
   label?: string;
   error?: string;
   textarea?: boolean;
@@ -12,27 +19,30 @@ interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const CustomInput: React.FC<CustomInputProps> = ({
+  name,
+  control,
+  rules,
   label,
-  error,
   required,
   className,
   textarea,
   leftIcon,
-  rightIcon,
-  togglePassword = false,
-  type = "text",
+  type,
   ...props
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const isPassword = togglePassword && type === "password";
-  const inputType = isPassword && showPassword ? "text" : type;
+  const {
+    field,
+    fieldState: { error },
+  } = useController<FormData>({
+    name,
+    control,
+    rules,
+  });
 
   const baseClasses = clsx(
     "w-full px-4 py-2 rounded-lg border focus:outline-none  placeholder-text-gray_400 text-sm",
     error ? "border-red-500" : "border-gray-300",
     leftIcon && "pl-10",
-    (rightIcon || isPassword) && "pr-10",
     className
   );
 
@@ -46,40 +56,28 @@ export const CustomInput: React.FC<CustomInputProps> = ({
       )}
 
       <div className="relative">
-        {leftIcon && (
-          <div className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none">
-            {leftIcon}
-          </div>
-        )}
-
         {textarea ? (
           <textarea
             className={baseClasses}
             required={required}
             rows={6}
+            {...field}
             {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
           />
         ) : (
           <input
-            type={inputType}
+            type={type}
             className={baseClasses}
             required={required}
             {...props}
+            {...field}
+            {...props}
+            value={field.value || ""}
           />
-        )}
-
-        {(rightIcon || isPassword) && (
-          <div
-            className={clsx(
-              "absolute inset-y-0 right-3 flex items-center",
-              isPassword && "cursor-pointer"
-            )}
-            onClick={() => isPassword && setShowPassword((prev) => !prev)}
-          ></div>
         )}
       </div>
 
-      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-sm text-red-500 mt-1">{error.message}</p>}
     </div>
   );
 };

@@ -3,11 +3,12 @@ import clsx from "clsx";
 import { Loader } from "./Loader";
 
 type ButtonProps = {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "danger";
   isLoading?: boolean;
   children: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  className?: string;
   type?: "button" | "submit" | "reset";
 };
 
@@ -17,6 +18,7 @@ export const CustomButton = ({
   children,
   onClick,
   disabled,
+  className,
   type = "button",
 }: ButtonProps) => {
   return (
@@ -30,8 +32,10 @@ export const CustomButton = ({
           "bg-gray_700 text-white hover:bg-gray-800": variant === "primary",
           "border border-gray-300 text-gray_700 hover:bg-gray-100":
             variant === "secondary",
+          "bg-red-600 text-white hover:bg-red-700": variant === "danger",
           "opacity-50 cursor-not-allowed": disabled || isLoading,
-        }
+        },
+        className
       )}
     >
       {children}
