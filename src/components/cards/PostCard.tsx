@@ -43,17 +43,19 @@ const PostCard = ({ post, title, onDelete, id }: CardProp) => {
     // </div>
 
     <div
-      className="relative p-4 border border-gray-300 rounded-lg shadow-md w-full sm:w-auto h-52 sm:h-[293px] overflow-hidden bg-white flex flex-col"
+      className="p-4 border border-gray-300 rounded-lg shadow-md w-full sm:w-auto h-52 sm:h-[293px] overflow-hidden bg-white flex flex-col"
       aria-labelledby="post-title"
     >
-      <button
-        onClick={() => onDelete(id)}
-        className="absolute top-3 right-3 z-10 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-300"
-        aria-label="Delete post"
-        data-testid="delete-icon"
-      >
-        <Trash2 className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
-      </button>
+      <div className="flex items-center justify-end">
+        <button
+          onClick={() => onDelete(id)}
+          className="top-3 right-3 z-10 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-300"
+          aria-label="Delete post"
+          data-testid="delete-icon"
+        >
+          <Trash2 className="w-3 h-3  text-error" />
+        </button>
+      </div>
 
       <div className="flex flex-col h-full gap-2">
         <CustomText

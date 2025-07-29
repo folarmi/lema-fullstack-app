@@ -72,16 +72,11 @@ const UsersDashboard = () => {
         const address = info.getValue();
         const formatted = `${address?.street}, ${address?.state}, ${address?.city}, ${address?.zipcode}`;
         return (
-          // <div className="w-[392px] truncate">
-          //   <CustomText
-          //     variant="textSm"
-          //     className="whitespace-nowrap overflow-hidden text-ellipsis block"
-          //   >
-          //     {formatted}
-          //   </CustomText>
-          // </div>
-          <div className="w-[392px]">
-            <CustomText variant="textSm" className="truncate block">
+          <div className="w-[300px]">
+            <CustomText
+              variant="textSm"
+              className="whitespace-nowrap overflow-hidden text-ellipsis block w-full"
+            >
               {formatted}
             </CustomText>
           </div>

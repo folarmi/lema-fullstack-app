@@ -10,6 +10,7 @@ export default {
         gray_600: "#535862",
         gray_700: "#334155",
         gray_900: "#181D27",
+        error: "#F9566A",
         brand_50: "#F9F5FF",
         brand_600: "#7F56D9",
       },
