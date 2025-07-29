@@ -60,7 +60,7 @@ const Table = ({
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-2xl border border-gray_200 pt-4">
+          <div className="overflow-x-auto lg:overflow-hidden rounded-2xl border border-gray_200 pt-4">
             <table className="w-full  ">
               <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -114,94 +114,6 @@ const Table = ({
               </tbody>
             </table>
           </div>
-
-          {/* {data && (
-            <div className="mt-6 flex flex-col sm:flex-row items-center justify-end gap-3">
-              <button
-                className="flex items-center cursor-pointer"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <img src={leftArrow} aria-label="Previous Page" />
-                <CustomText variant="textSemiBold" className="pl-2">
-                  Previous
-                </CustomText>
-              </button>
-
-              <div className="flex items-center gap-1 mx-2 sm:mx-4 flex-wrap justify-center">
-                <button
-                  onClick={() => table.setPageIndex(0)}
-                  className={clsx(
-                    "px-3 py-1 rounded-lg text-sm font-medium h-10 w-10",
-                    table.getState().pagination.pageIndex === 0
-                      ? "bg-brand_50 text-brand_600"
-                      : "text-gray_500"
-                  )}
-                >
-                  1
-                </button>
-
-                {table.getState().pagination.pageIndex > 2 && (
-                  <span className="px-2 text-gray-500">...</span>
-                )}
-
-                {Array.from({ length: table.getPageCount() }, (_, i) => {
-                  if (
-                    i > 0 &&
-                    i < table.getPageCount() - 1 &&
-                    Math.abs(i - table.getState().pagination.pageIndex) <= 1
-                  ) {
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => table.setPageIndex(i)}
-                        className={clsx(
-                          "px-3 py-1 rounded-lg text-sm font-medium h-10 w-10",
-                          table.getState().pagination.pageIndex === i
-                            ? "bg-brand_50 text-brand_600"
-                            : "text-gray_500"
-                        )}
-                      >
-                        {i + 1}
-                      </button>
-                    );
-                  }
-                  return null;
-                })}
-
-                {table.getState().pagination.pageIndex <
-                  table.getPageCount() - 3 && (
-                  <span className="px-2 text-gray-500">...</span>
-                )}
-
-                {table.getPageCount() > 1 && (
-                  <button
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    className={clsx(
-                      "px-3 py-1 rounded-lg text-sm font-medium h-10 w-10",
-                      table.getState().pagination.pageIndex ===
-                        table.getPageCount() - 1
-                        ? "bg-brand_50 text-brand_600"
-                        : "text-gray_500"
-                    )}
-                  >
-                    {table.getPageCount()}
-                  </button>
-                )}
-              </div>
-
-              <button
-                className="flex items-center cursor-pointer"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <CustomText variant="textSemiBold" className="pr-2">
-                  Next
-                </CustomText>
-                <img src={rightArrow} aria-label="Next Page" />
-              </button>
-            </div>
-          )} */}
 
           {data && (
             <div className="mt-6 flex items-center justify-center sm:justify-end gap-1 sm:gap-3 flex-nowrap overflow-x-hidden w-full py-1">
