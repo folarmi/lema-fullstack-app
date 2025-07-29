@@ -49,7 +49,7 @@ const PostCard = ({ post, title, onDelete, id }: CardProp) => {
       <div className="flex items-center justify-end">
         <button
           onClick={() => onDelete(id)}
-          className="top-3 right-3 z-10 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-300"
+          className="z-10 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-300"
           aria-label="Delete post"
           data-testid="delete-icon"
         >
